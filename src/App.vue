@@ -9,7 +9,7 @@
 
       <div class="sidebar-block">
         <h2>1. Escribe tu mensaje</h2>
-        <textarea name="" id="" cols="30" rows="10"></textarea>
+        <textarea name="" id="mess" cols="30" rows="10"></textarea>
       </div>
 
       <div class="sidebar-block">
@@ -41,7 +41,7 @@
 
         
       <div class="sidebar-block"> 
-        <div class="button" @click="this.sendMessage" :disabled="sent">
+        <div class="button" @click="this.po" :disabled="sent">
           {{sent ? 'Enviado' : 'Enviar'}}
         </div>
       </div>
@@ -56,8 +56,14 @@
     </div>
   </div>
 </template>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script>
+
+//const fetch = require('fetch')
+
+import axios from 'axios';
+
 export default {
   name: 'app',
   data () {
@@ -111,7 +117,26 @@ export default {
   },
 
   methods: {
+    po() {
+
+      axios.post('http://localhost:3000/notification', {
+        priority: 'HIGH',
+        value: document.getElementById('mess').value
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+
+
+        this.sendMessage()
+    },
+
     sendMessage() {
+
       this.sent = true;
       setTimeout(() => {
         const placeLocation = {
