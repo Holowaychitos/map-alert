@@ -39,8 +39,8 @@
 
         
       <div class="sidebar-block"> 
-        <div class="button" @click="this.sendMessage">
-          Enviar
+        <div class="button" @click="this.sendMessage" :disabled="sent">
+          {{sent ? 'Enviado' : 'Enviar'}}
         </div>
       </div>
     </div>
@@ -67,7 +67,9 @@ export default {
       totalPlaces: 20,
       remainingPlaces: 20,
 
-      priority: "low"
+      priority: "low",
+
+      sent: false
     }
   },
 
@@ -84,11 +86,11 @@ export default {
     });
 
     this.drawingManager = new google.maps.drawing.DrawingManager({
-      drawingMode: google.maps.drawing.OverlayType.MARKER,
+      drawingMode: google.maps.drawing.OverlayType.CIRCLE,
       drawingControl: true,
       drawingControlOptions: {
         position: google.maps.ControlPosition.TOP_CENTER,
-        drawingModes: ['circle', 'polyline', 'rectangle']
+        drawingModes: ['circle']
       },
       circleOptions: {
         fillColor: '#3498DB',
@@ -108,6 +110,7 @@ export default {
 
   methods: {
     sendMessage() {
+      this.sent = true;
       setTimeout(() => {
         const placeLocation = {
           "lat": 20.6184601 + Math.random() * 1.5,
@@ -165,9 +168,13 @@ html {
   position: relative;
 }
 
-.main {
+textarea, .main {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.2;
+  font-size: 16px;
+}
+
+.main {
   display: flex;
   height: 100vh;
   width: 100vw;
@@ -175,11 +182,18 @@ html {
 }
 
 .sidebar {
-  background: #ECF0F1;
+  margin: 0.5rem;
+  background: transparentize(#f3f7f8, 0.25);
+  box-shadow: rgba(0, 0, 0, 0.02) 0 0 64px, rgba(0, 0, 0, 0.04) 0 0 16px;
   color: #333;
   font-weight: 300;
   width: 24rem;
   padding: 1rem;
+  position: fixed;
+  height: 100vh;
+  z-index: 10;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .sidebar-block {
   padding: 1rem;
@@ -189,8 +203,16 @@ html {
   flex: 1;
 }
 
-h1, h2 {
+h1 {
+  color: darken(#00b579, 2%);
+}
+
+h2 {
   color: #000;
+}
+
+h1, h2 {
+  text-shadow: rgba(255, 255, 255, 0.5) 0 1px 0;
 }
 
 .button {
@@ -215,12 +237,26 @@ h1, h2 {
   }
 }
 
+.button[disabled] {
+  opacity: 0.66;
+  pointer-events: none;
+  cursor: default;
+}
+
 textarea {
   padding: 1rem;
+  height: 10rem;
   border: 0;
   margin: 1rem 0;
   display: block;
   width: 100%;
+  box-shadow: rgba(0, 0, 0, 0.03) 0 2px 24px;
+  resize: none;
+
+  &:focus {
+    outline: none;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 2px 24px;
+  }
 }
 
 .progress {
@@ -236,7 +272,7 @@ textarea {
 
 .select {
   padding: 1rem 0;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
 }
 .select-option {
   font-weight: 400;
