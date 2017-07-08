@@ -1,3 +1,3 @@
 # map-alert
 
-[map-alert](docs/thumbnail.png)
+![map-alert](docs/thumbnail.png)
